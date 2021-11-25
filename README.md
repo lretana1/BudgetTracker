@@ -22,7 +22,7 @@ code can be downloaded from github and run from a local server or you can visit 
 [budget-tracker]()
 
 ## Screenshot
-![ScreenShot](assests/screenshot.jpg)
+![ScreenShot](assets/screenshot.jpg)
 
 ## License
 
