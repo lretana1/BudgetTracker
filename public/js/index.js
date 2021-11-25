@@ -100,3 +100,115 @@ function sendTransaction(isAdding) {
   if (!isAdding) {
     transaction.value *= -1;
   }
+  
+  transactions.unshift(transaction);
+
+  // populates ui with new record
+  populateChart();
+  populateTable();
+  populateTotal();
+
+  //send to server
+  transactionApi
+    .create(transaction)
+    .then((data) => {
+      if (data.errors) {
+        transactionForm.showError("Missing Information");
+      } else {
+        transactionForm.clear();
+      }
+    })
+    .catch(() => {
+  // fetch failed
+      saveRecord(transaction);
+      transactionForm.clear();
+    });
+}
+
+function renderTransactionsChart() {
+  populateTotal();
+  populateTable();
+  populateChart();
+}
+
+function populateTotal() {
+  // reduce to a single value
+  const total = transactions.reduce((total, t) => {
+    return total + parseInt(t.value);
+  }, 0);
+
+  const totalEl = document.querySelector("#total");
+  totalEl.textContent = total;
+}
+
+function populateTable() {
+  let tbody = document.querySelector("#tbody");
+  tbody.innerHTML = "";
+
+  transactions.forEach((transaction) => {
+    // create and populate a row
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${transaction.name}</td>
+      <td>${transaction.value}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+  
+  transactions.unshift(transaction);
+
+  //populate ui with new record
+  populateChart();
+  populateTable();
+  populateTotal();
+
+  // send to server
+  transactionApi
+    .create(transaction)
+    .then((data) => {
+      if (data.errors) {
+        transactionForm.showError("Missing Information");
+      } else {
+        transactionForm.clear();
+      }
+    })
+    .catch(() => {
+      // fetch failed
+      saveRecord(transaction);
+      transactionForm.clear();
+    });
+}
+
+function renderTransactionsChart() {
+  populateTotal();
+  populateTable();
+  populateChart();
+}
+
+function populateTotal() {
+  // reduce to a single value
+  const total = transactions.reduce((total, t) => {
+    return total + parseInt(t.value);
+  }, 0);
+
+  const totalEl = document.querySelector("#total");
+  totalEl.textContent = total;
+}
+
+function populateTable() {
+  let tbody = document.querySelector("#tbody");
+  tbody.innerHTML = "";
+
+  transactions.forEach((transaction) => {
+    // create and populate a row
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${transaction.name}</td>
+      <td>${transaction.value}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
