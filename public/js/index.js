@@ -161,3 +161,21 @@ function populateTable() {
     tbody.appendChild(tr);
   });
 }
+function populateChart() {
+
+  const reversed = transactions.slice().reverse();
+  let sum = 0;
+
+  // create date labels for chart
+  const labels = reversed.map((t) => {
+    const date = new Date(t.date);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  });
+
+  // create incremental values for chart
+  const data = reversed.map((t) => {
+    sum += parseInt(t.value);
+    return sum;
+  });
+
+  
