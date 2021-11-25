@@ -1,4 +1,4 @@
-//added service worker
+// register our service worker
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js").then((reg) => {
@@ -31,7 +31,9 @@ function createTransactionForm() {
     errorEl.textContent = message;
   };
 
+  // return false if invalid and display validation message
   const validate = () => {
+    // validate form
     if (nameEl.value === "" || amountEl.value === "") {
       showError("Missing Information");
       return false;
@@ -40,6 +42,7 @@ function createTransactionForm() {
     return true;
   };
 
+  // return transaction object from form input
   const transaction = () => {
     return {
       name: nameEl.value,
@@ -48,7 +51,7 @@ function createTransactionForm() {
     };
   };
 
-  // clears inputs
+  // clear form inputs
   const clear = () => {
     nameEl.value = "";
     amountEl.value = "";
@@ -94,21 +97,23 @@ function sendTransaction(isAdding) {
     return;
   }
 
+  // create record
   const transaction = transactionForm.transaction();
 
-  // Converts to negative number
+  // if subtracting funds, convert amount to negative number
   if (!isAdding) {
     transaction.value *= -1;
   }
-  
+
+  // add to beginning of current array of data
   transactions.unshift(transaction);
 
-  // populates ui with new record
+  // re-run logic to populate ui with new record
   populateChart();
   populateTable();
   populateTotal();
 
-  //send to server
+  // also send to server
   transactionApi
     .create(transaction)
     .then((data) => {
@@ -119,7 +124,7 @@ function sendTransaction(isAdding) {
       }
     })
     .catch(() => {
-  // fetch failed
+      // fetch failed, so save in indexed db
       saveRecord(transaction);
       transactionForm.clear();
     });
@@ -132,7 +137,7 @@ function renderTransactionsChart() {
 }
 
 function populateTotal() {
-  // reduce to a single value
+  // reduce transaction amounts to a single total value
   const total = transactions.reduce((total, t) => {
     return total + parseInt(t.value);
   }, 0);
@@ -146,63 +151,7 @@ function populateTable() {
   tbody.innerHTML = "";
 
   transactions.forEach((transaction) => {
-    // create and populate a row
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${transaction.name}</td>
-      <td>${transaction.value}</td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-  
-  transactions.unshift(transaction);
-
-  //populate ui with new record
-  populateChart();
-  populateTable();
-  populateTotal();
-
-  // send to server
-  transactionApi
-    .create(transaction)
-    .then((data) => {
-      if (data.errors) {
-        transactionForm.showError("Missing Information");
-      } else {
-        transactionForm.clear();
-      }
-    })
-    .catch(() => {
-      // fetch failed
-      saveRecord(transaction);
-      transactionForm.clear();
-    });
-}
-
-function renderTransactionsChart() {
-  populateTotal();
-  populateTable();
-  populateChart();
-}
-
-function populateTotal() {
-  // reduce to a single value
-  const total = transactions.reduce((total, t) => {
-    return total + parseInt(t.value);
-  }, 0);
-
-  const totalEl = document.querySelector("#total");
-  totalEl.textContent = total;
-}
-
-function populateTable() {
-  let tbody = document.querySelector("#tbody");
-  tbody.innerHTML = "";
-
-  transactions.forEach((transaction) => {
-    // create and populate a row
+    // create and populate a table row
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${transaction.name}</td>
