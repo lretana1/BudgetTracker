@@ -178,4 +178,25 @@ function populateChart() {
     return sum;
   });
 
-  
+   // remove old chart if it exists
+   if (myChart) {
+    myChart.destroy();
+  }
+
+  const ctx = document.getElementById("myChart").getContext("2d");
+
+  myChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Total Over Time",
+          fill: true,
+          backgroundColor: "#6666ff",
+          data
+        }
+      ]
+    }
+  });
+}
